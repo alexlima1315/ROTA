@@ -1,0 +1,330 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db { provider = "postgresql" }
+
+enum PapelUsuario { ESTUDANTE ADMIN }
+enum PlanoUsuario { GRATUITO PREMIUM }
+enum SituacaoArtigo { VIGENTE ATUALIZADO REVOGADO }
+enum TipoInciso { CAPUT PARAGRAFO INCISO ALINEA }
+enum TipoQuestao { MULTIPLA_ESCOLHA CERTO_ERRADO DISSERTATIVA }
+enum DificuldadeQuestao { FACIL MEDIA DIFICIL }
+enum StatusQuestao { RASCUNHO PUBLICADA ARQUIVADA }
+enum TipoAnexo { PDF MAPA_MENTAL RESUMO OUTRO }
+enum StatusComentarioQuestao { PUBLICADO OCULTO }
+enum StatusSimulado { EM_ANDAMENTO CONCLUIDO EXPIRADO }
+enum StatusAssinatura { ATIVA CANCELADA EXPIRADA }
+
+model Usuario {
+  id                 String @id @default(uuid()) @db.Uuid
+  nome               String @db.VarChar(180)
+  email              String @unique @db.VarChar(320)
+  senhaHash          String @db.VarChar(255)
+  plano              PlanoUsuario @default(GRATUITO)
+  papel              PapelUsuario @default(ESTUDANTE)
+  horasLiquidas      Int @default(0)
+  criadoEm           DateTime @default(now()) @db.Timestamptz(6)
+  atualizadoEm       DateTime @updatedAt @db.Timestamptz(6)
+  sessoes            AuthSessao[]
+  anotacoes          AnotacaoUsuario[]
+  questoesCriadas    BancoQuestao[] @relation("QuestaoAutor")
+  tentativas         TentativaQuestao[]
+  comentariosQuestao ComentarioQuestao[]
+  curtidasComentario CurtidaComentario[]
+  simulados          Simulado[]
+  usoQuestoesDiario  UsoQuestaoDiario[]
+  registrosEstudo    RegistroEstudo[]
+  assinaturas        AssinaturaPagamento[]
+  @@index([papel])
+  @@map("usuarios")
+}
+
+model AuthSessao {
+  token     String @id @db.VarChar(64)
+  usuarioId String @db.Uuid
+  expiraEm  DateTime @db.Timestamptz(6)
+  criadoEm  DateTime @default(now()) @db.Timestamptz(6)
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  @@index([usuarioId, expiraEm])
+  @@map("auth_sessoes")
+}
+
+model Lei {
+  id         String @id @default(uuid()) @db.Uuid
+  titulo     String @db.VarChar(300)
+  numero     String @db.VarChar(80)
+  sigla      String? @db.VarChar(80)
+  ano        Int?
+  jurisdicao String? @db.VarChar(80)
+  uf         String? @db.VarChar(2)
+  capitulos  Capitulo[]
+  @@index([ano, numero])
+  @@map("leis")
+}
+
+model Capitulo {
+  id       String @id @default(uuid()) @db.Uuid
+  leiId    String @db.Uuid
+  rotulo   String? @db.VarChar(80)
+  titulo   String @db.VarChar(300)
+  ordem    Int
+  lei      Lei @relation(fields: [leiId], references: [id], onDelete: Cascade)
+  artigos  Artigo[]
+  @@unique([leiId, ordem])
+  @@index([leiId, ordem])
+  @@map("capitulos")
+}
+
+model Artigo {
+  id          String @id @default(uuid()) @db.Uuid
+  capituloId  String @db.Uuid
+  numero      String @db.VarChar(80)
+  titulo      String? @db.VarChar(300)
+  textoCaput  String @db.Text
+  situacao    SituacaoArtigo @default(VIGENTE)
+  revogadoEm  DateTime? @db.Timestamptz(6)
+  ordem       Int
+  capitulo    Capitulo @relation(fields: [capituloId], references: [id], onDelete: Cascade)
+  incisos     Inciso[]
+  videos      VideoYouTube[]
+  anexos      AnexoWeb[]
+  anotacoes   AnotacaoUsuario[]
+  questoes    BancoQuestao[]
+  @@unique([capituloId, ordem])
+  @@index([capituloId, situacao, ordem])
+  @@map("artigos")
+}
+
+model Inciso {
+  id         String @id @default(uuid()) @db.Uuid
+  artigoId   String @db.Uuid
+  tipo       TipoInciso
+  rotulo     String @db.VarChar(80)
+  texto      String @db.Text
+  ordem      Int
+  situacao   SituacaoArtigo @default(VIGENTE)
+  revogadoEm DateTime? @db.Timestamptz(6)
+  artigo     Artigo @relation(fields: [artigoId], references: [id], onDelete: Cascade)
+  @@unique([artigoId, ordem])
+  @@map("incisos")
+}
+
+model Trilha {
+  id      String @id @default(uuid()) @db.Uuid
+  titulo  String @db.VarChar(250)
+  slug    String @unique @db.VarChar(250)
+  videos  VideoYouTube[]
+  anexos  AnexoWeb[]
+  @@map("trilhas")
+}
+
+model VideoYouTube {
+  id       String @id @default(uuid()) @db.Uuid
+  videoId  String @db.VarChar(11)
+  titulo   String @db.VarChar(300)
+  artigoId String? @db.Uuid
+  trilhaId String? @db.Uuid
+  artigo   Artigo? @relation(fields: [artigoId], references: [id], onDelete: Cascade)
+  trilha   Trilha? @relation(fields: [trilhaId], references: [id], onDelete: Cascade)
+  @@unique([videoId, artigoId])
+  @@index([artigoId])
+  @@index([trilhaId])
+  @@map("videos_youtube")
+}
+
+model AnexoWeb {
+  id       String @id @default(uuid()) @db.Uuid
+  titulo   String @db.VarChar(300)
+  url      String @db.VarChar(2048)
+  tipo     TipoAnexo
+  artigoId String? @db.Uuid
+  trilhaId String? @db.Uuid
+  artigo   Artigo? @relation(fields: [artigoId], references: [id], onDelete: Cascade)
+  trilha   Trilha? @relation(fields: [trilhaId], references: [id], onDelete: Cascade)
+  @@index([artigoId])
+  @@index([trilhaId])
+  @@map("anexos_web")
+}
+
+model AnotacaoUsuario {
+  id          String @id @default(uuid()) @db.Uuid
+  usuarioId   String @db.Uuid
+  artigoId    String @db.Uuid
+  titulo      String? @db.VarChar(250)
+  conteudo    String @db.Text
+  criadaEm    DateTime @default(now()) @db.Timestamptz(6)
+  atualizadaEm DateTime @updatedAt @db.Timestamptz(6)
+  usuario     Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  artigo      Artigo @relation(fields: [artigoId], references: [id], onDelete: Cascade)
+  @@unique([usuarioId, artigoId])
+  @@map("anotacoes_usuarios")
+}
+
+model BancoQuestao {
+  id          String @id @default(uuid()) @db.Uuid
+  artigoId    String? @db.Uuid
+  autorId     String? @db.Uuid
+  bancaId     String? @db.Uuid
+  tipo        TipoQuestao @default(MULTIPLA_ESCOLHA)
+  dificuldade DificuldadeQuestao @default(MEDIA)
+  status      StatusQuestao @default(RASCUNHO)
+  enunciado   String @db.Text
+  explicacao  String? @db.Text
+  ano         Int?
+  cargo       String? @db.VarChar(180)
+  assunto     String? @db.VarChar(180)
+  criadaEm    DateTime @default(now()) @db.Timestamptz(6)
+  atualizadaEm DateTime @updatedAt @db.Timestamptz(6)
+  artigo      Artigo? @relation(fields: [artigoId], references: [id], onDelete: SetNull)
+  autor       Usuario? @relation("QuestaoAutor", fields: [autorId], references: [id], onDelete: SetNull)
+  banca       BancaExaminadora? @relation(fields: [bancaId], references: [id], onDelete: SetNull)
+  alternativas QuestaoAlternativa[]
+  tentativas  TentativaQuestao[]
+  comentarios ComentarioQuestao[]
+  emSimulados SimuladoQuestao[]
+  @@index([bancaId, ano, dificuldade, status])
+  @@index([assunto, status])
+  @@map("banco_questoes")
+}
+
+model QuestaoAlternativa {
+  id        String @id @default(uuid()) @db.Uuid
+  questaoId String @db.Uuid
+  codigo    String @db.VarChar(8)
+  texto     String @db.Text
+  correta   Boolean @default(false)
+  ordem     Int
+  questao   BancoQuestao @relation(fields: [questaoId], references: [id], onDelete: Cascade)
+  @@unique([questaoId, codigo])
+  @@unique([questaoId, ordem])
+  @@map("questoes_alternativas")
+}
+
+model TentativaQuestao {
+  id                     String @id @default(uuid()) @db.Uuid
+  usuarioId              String @db.Uuid
+  questaoId              String @db.Uuid
+  alternativaSelecionada String? @db.VarChar(8)
+  respostaTexto          String? @db.Text
+  correta                Boolean
+  duracaoSegundos        Int @default(0)
+  respondidaEm           DateTime @default(now()) @db.Timestamptz(6)
+  usuario                Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  questao                BancoQuestao @relation(fields: [questaoId], references: [id], onDelete: Cascade)
+  @@index([usuarioId, respondidaEm])
+  @@map("tentativas_questoes")
+}
+
+model BancaExaminadora {
+  id       String @id @default(uuid()) @db.Uuid
+  nome     String @unique @db.VarChar(100)
+  slug     String @unique @db.VarChar(100)
+  questoes BancoQuestao[]
+  @@map("bancas_examinadoras")
+}
+
+model ComentarioQuestao {
+  id           String @id @default(uuid()) @db.Uuid
+  questaoId    String @db.Uuid
+  usuarioId    String @db.Uuid
+  paiId        String? @db.Uuid
+  conteudo     String @db.VarChar(5000)
+  status       StatusComentarioQuestao @default(PUBLICADO)
+  criadoEm     DateTime @default(now()) @db.Timestamptz(6)
+  atualizadoEm DateTime @updatedAt @db.Timestamptz(6)
+  questao      BancoQuestao @relation(fields: [questaoId], references: [id], onDelete: Cascade)
+  usuario      Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  pai          ComentarioQuestao? @relation("RespostasComentario", fields: [paiId], references: [id], onDelete: Cascade)
+  respostas    ComentarioQuestao[] @relation("RespostasComentario")
+  curtidas     CurtidaComentario[]
+  @@index([questaoId, status, criadoEm])
+  @@map("comentarios_questoes")
+}
+
+model CurtidaComentario {
+  id           String @id @default(uuid()) @db.Uuid
+  comentarioId String @db.Uuid
+  usuarioId    String @db.Uuid
+  criadoEm     DateTime @default(now()) @db.Timestamptz(6)
+  comentario   ComentarioQuestao @relation(fields: [comentarioId], references: [id], onDelete: Cascade)
+  usuario      Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  @@unique([comentarioId, usuarioId])
+  @@map("curtidas_comentarios")
+}
+
+model Simulado {
+  id                  String @id @default(uuid()) @db.Uuid
+  usuarioId           String @db.Uuid
+  filtros             Json @db.JsonB
+  status              StatusSimulado @default(EM_ANDAMENTO)
+  totalQuestoes       Int @default(50)
+  tempoLimiteSegundos Int
+  iniciadoEm          DateTime @default(now()) @db.Timestamptz(6)
+  terminaEm            DateTime @db.Timestamptz(6)
+  concluidoEm          DateTime? @db.Timestamptz(6)
+  totalAcertos         Int?
+  usuario              Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  questoes             SimuladoQuestao[]
+  @@index([usuarioId, iniciadoEm])
+  @@map("simulados")
+}
+
+model SimuladoQuestao {
+  id                    String @id @default(uuid()) @db.Uuid
+  simuladoId            String @db.Uuid
+  questaoId             String @db.Uuid
+  ordem                 Int
+  alternativaSelecionada String? @db.VarChar(8)
+  correta               Boolean?
+  respondidaEm          DateTime? @db.Timestamptz(6)
+  simulado              Simulado @relation(fields: [simuladoId], references: [id], onDelete: Cascade)
+  questao               BancoQuestao @relation(fields: [questaoId], references: [id], onDelete: Restrict)
+  @@unique([simuladoId, ordem])
+  @@unique([simuladoId, questaoId])
+  @@map("simulados_questoes")
+}
+
+model UsoQuestaoDiario {
+  usuarioId  String @db.Uuid
+  data       DateTime @db.Date
+  quantidade Int @default(0)
+  atualizadoEm DateTime @updatedAt @db.Timestamptz(6)
+  usuario    Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  @@id([usuarioId, data])
+  @@map("uso_questao_diario")
+}
+
+model RegistroEstudo {
+  id              String @id @default(uuid()) @db.Uuid
+  usuarioId       String @db.Uuid
+  iniciadoEm      DateTime @db.Timestamptz(6)
+  encerradoEm     DateTime? @db.Timestamptz(6)
+  segundosLiquidos Int @default(0)
+  usuario         Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  @@index([usuarioId, iniciadoEm])
+  @@map("registros_estudo")
+}
+
+model AssinaturaPagamento {
+  id                   String @id @default(uuid()) @db.Uuid
+  usuarioId            String @db.Uuid
+  gateway              String @db.VarChar(24)
+  clienteGatewayId     String? @db.VarChar(255)
+  assinaturaGatewayId String? @unique @db.VarChar(255)
+  status               StatusAssinatura @default(ATIVA)
+  periodoAte           DateTime? @db.Timestamptz(6)
+  atualizadoEm         DateTime @updatedAt @db.Timestamptz(6)
+  usuario              Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  @@index([usuarioId, status])
+  @@map("assinaturas_pagamento")
+}
+
+model EventoPagamentoProcessado {
+  gateway      String @db.VarChar(24)
+  eventoId     String @db.VarChar(255)
+  processadoEm DateTime @default(now()) @db.Timestamptz(6)
+  @@id([gateway, eventoId])
+  @@map("eventos_pagamento_processados")
+}

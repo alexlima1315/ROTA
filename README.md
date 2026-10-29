@@ -34,4 +34,3 @@ Veja `mobile/README.md`. Defina `EXPO_PUBLIC_API_URL` para uma origem HTTPS, con
 ## Estado da consolidação
 
 Esta pasta reúne código e especificações que estavam salvos localmente. A base original das Fases 1 e 2 foi reconstruída a partir das dependências visíveis nos artefatos seguintes; configure autenticação mobile e revise o schema e as migrações antes de usar em produção. PDFs originais não foram copiados, pois não estavam disponíveis nos arquivos do projeto.
-

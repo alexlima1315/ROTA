@@ -1,0 +1,8 @@
+'use client';
+import { useState } from 'react';
+
+export default function PlansPage() {
+  const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  async function checkout() { setBusy(true); setError(''); const r = await fetch('/api/billing/checkout', { method: 'POST' }); const d = await r.json().catch(() => ({})); setBusy(false); if (!r.ok || !d.url) { setError(d.error || 'Não foi possível iniciar o pagamento.'); return; } window.location.assign(d.url); }
+  return <main className="mx-auto max-w-4xl px-4 py-12"><p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">Códex Dinâmico</p><h1 className="mt-2 text-3xl font-bold">Escolha como quer estudar</h1><p className="mt-2 text-slate-600">O plano gratuito permite resolver até 10 questões por dia.</p><section className="mt-8 rounded-3xl border-2 border-indigo-200 bg-white p-8 shadow-sm"><span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">Premium</span><h2 className="mt-4 text-2xl font-bold">Mais espaço para praticar</h2><ul className="mt-4 list-inside list-disc space-y-2 text-slate-700"><li>Questões sem limite diário</li><li>Simulados completos com 50 questões</li><li>Dashboard com sua evolução e tempo de estudo</li></ul><button onClick={() => void checkout()} disabled={busy} className="mt-6 rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white disabled:opacity-50">{busy ? 'Conectando ao pagamento…' : 'Assinar Premium'}</button>{error && <p role="alert" className="mt-3 text-sm text-red-700">{error}</p>}<p className="mt-3 text-xs text-slate-500">A confirmação do plano ocorre pelo webhook seguro do gateway.</p></section></main>;
+}

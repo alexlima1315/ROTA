@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Códex Dinâmico",
+    "slug": "codex-dinamico",
+    "scheme": "codexdinamico",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": { "supportsTablet": true, "bundleIdentifier": "br.com.codexdinamico.app" },
+    "android": { "package": "br.com.codexdinamico.app", "permissions": [] },
+    "plugins": ["expo-secure-store"]
+  }
+}
