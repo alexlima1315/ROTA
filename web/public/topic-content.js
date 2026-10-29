@@ -66,6 +66,10 @@
     'adm-principios': { title: 'Direito Administrativo — livro didático aberto (eduCAPES)', url: 'https://educapes.capes.gov.br/bitstream/capes/401410/1/Livro%20Direito%20Administrativo%203ed%20GRAFICA.pdf', source: 'eduCAPES / CAPES · apoio conceitual; consulte normas vigentes' },
     'adm-atos': { title: 'Direito Administrativo — livro didático aberto (eduCAPES)', url: 'https://educapes.capes.gov.br/bitstream/capes/401410/1/Livro%20Direito%20Administrativo%203ed%20GRAFICA.pdf', source: 'eduCAPES / CAPES · apoio conceitual; consulte normas vigentes' },
     'adm-poderes': { title: 'Direito Administrativo — livro didático aberto (eduCAPES)', url: 'https://educapes.capes.gov.br/bitstream/capes/401410/1/Livro%20Direito%20Administrativo%203ed%20GRAFICA.pdf', source: 'eduCAPES / CAPES · apoio conceitual; consulte normas vigentes' },
+    'informatica-arquivos': { title: 'Curso básico de informática — noções de computador, arquivos e internet', url: 'https://portaldoprofessor.mec.gov.br/storage/materiais/0000013608.pdf', source: 'Portal do Professor / MEC · material introdutório' },
+    planilhas: { title: 'Guia de Introdução ao LibreOffice 24.8 — Capítulo do Calc', url: 'https://books.libreoffice.org/pt-br/GS248/GS24803-GettingStartedWithCalc.html', source: 'Documentação oficial LibreOffice · inclui opção de PDF' },
+    internet: { title: 'Cartilhas gratuitas de segurança digital em PDF', url: 'https://www.gov.br/pf/pt-br/assuntos/combate-a-crimes-ciberneticos/cartilhas-de-seguranca-da-informacao', source: 'Polícia Federal · coleção de cartilhas' },
+    'etica-publica': { title: 'Código de Ética do Servidor Público Federal — PDF', url: 'https://www.gov.br/mj/pt-br/acesso-a-informacao/institucional/comissao-de-etica/normativos-1/decreto-no-1-171-de-1994-2013-codigo-de-etica-do-servidor-civil-do-poder-executivo-federal.pdf/view', source: 'Ministério da Justiça · fonte oficial' },
     'processo-adm': { title: 'Lei nº 9.784/1999 — PDF do texto original', url: 'https://www.gov.br/mj/pt-br/assuntos/seus-direitos/entidades-sociais/oscip/anexos/1999lei9784.pdf', source: 'Governo Federal · confira alterações na versão oficial' },
     servidores: { title: 'Lei nº 8.112/1990 anotada — PDFs do Portal do Servidor', url: 'https://www.gov.br/servidor/pt-br/acesso-a-informacao/gestao-de-pessoas/lei-8112-anotada', source: 'Portal do Servidor · material atualizado pelo órgão' },
     lai: { title: 'Cartilha da Lei de Acesso à Informação — PDF', url: 'https://www.gov.br/funasa/pt-br/acesso-a-informacao/participacao-social/ouvidoria/cartilha-lei-de-acesso-a-informacao_compressed.pdf', source: 'CGU / Governo Federal' },
@@ -73,6 +77,25 @@
   };
 
   const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+  const officialTexts = {
+    'const-fundamentos': 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+    'const-direitos': 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+    'const-administracao': 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+    'const-poderes': 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+    'adm-principios': 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+    'adm-atos': 'https://www.planalto.gov.br/ccivil_03/leis/l9784.htm',
+    'adm-poderes': 'https://www.planalto.gov.br/ccivil_03/leis/l9784.htm',
+    'etica-publica': 'https://www.planalto.gov.br/ccivil_03/decreto/d1171.htm',
+    'processo-adm': 'https://www.planalto.gov.br/ccivil_03/leis/l9784.htm',
+    servidores: 'https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm',
+    lai: 'https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm'
+  };
+  const selectedVideos = {
+    figuras: 'https://www.youtube.com/watch?v=n0e75nRstcU',
+    concordancia: 'https://www.youtube.com/watch?v=4ZJnTqTk4_Y',
+    'adm-atos': 'https://www.youtube.com/watch?v=wCi81Unha3U',
+    'processo-adm': 'https://www.youtube.com/watch?v=XvYfFz48T3M'
+  };
   window.rotaTopicExtras = {
     render(topic) {
       const lesson = lessons[topic.id] || [
@@ -83,16 +106,20 @@
       ];
       const pdf = topicMaterials[topic.id] || materials[topic.area] || materials['Língua Portuguesa'];
       const query = encodeURIComponent(`aula gratuita ${topic.title} concurso público`);
-      const isLaw = ['Direito Constitucional', 'Direito Administrativo', 'Legislação e Transparência'].includes(topic.area);
-      const sourceLink = isLaw && topic.source ? `<a class="resource-card" href="${esc(topic.source)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">⚖️</span><span><b>Texto oficial para conferir</b><small>Lei ou norma indicada no tópico · fonte oficial</small></span><span class="resource-arrow">↗</span></a>` : '';
+      const videoUrl = selectedVideos[topic.id] || `https://www.youtube.com/results?search_query=${query}`;
+      const isLaw = ['Direito Constitucional', 'Direito Administrativo', 'Ética no Serviço Público', 'Legislação e Transparência'].includes(topic.area);
+      const officialUrl = topic.source || officialTexts[topic.id];
+      const sourceLink = isLaw && officialUrl ? `<a class="resource-card" href="${esc(officialUrl)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">⚖️</span><span><b>Texto oficial para conferir</b><small>Lei ou norma indicada no tópico · fonte oficial</small></span><span class="resource-arrow">↗</span></a>` : '';
+      const mapMarkup = `<section class="topic-map" aria-label="Mapa visual do tópico"><div class="topic-map-center"><small>MAPA VISUAL DO ASSUNTO</small><b>${esc(topic.title)}</b></div><div class="topic-map-branches"><div><span>1</span><b>Ideia</b><p>${esc(topic.desc || 'Entenda o conceito e suas partes principais.')}</p></div><div><span>2</span><b>Exemplo</b><p>${esc(lesson[1])}</p></div><div><span>3</span><b>Na prova</b><p>${esc(lesson[3])}</p></div></div></section>`;
       return `<section class="topic-guide" aria-label="Conteúdo guiado do tópico">
         <div class="guide-heading"><span class="guide-kicker">APRENDER EM ETAPAS</span><h3>Vamos por partes</h3><p>Leia sem pressa. O exemplo mostra a ideia funcionando; depois, tente responder sozinho.</p></div>
         <div class="guide-concept"><span class="guide-step">1</span><div><b>Ideia principal</b><p>${esc(lesson[0])}</p></div></div>
         <div class="guide-example"><span class="guide-step">2</span><div><b>Exemplo simples</b><p>${esc(lesson[1])}</p></div></div>
         <div class="guide-practice"><span class="guide-step">3</span><div><b>Pratique agora</b><p>${esc(lesson[2])}</p><details><summary>Ver resposta explicada</summary><p>${esc(lesson[3])}</p></details></div></div>
+        ${mapMarkup}
         <div class="topic-resources"><div class="guide-heading"><span class="guide-kicker">CONTINUE ESTUDANDO</span><h3>Materiais gratuitos</h3><p>Recursos externos; confira a edição e o programa do seu edital, principalmente em legislação.</p></div>
           <div class="resource-grid"><a class="resource-card" href="${esc(pdf.url)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">📄</span><span><b>${esc(pdf.title)}</b><small>${esc(pdf.source)} · abre em nova aba</small></span><span class="resource-arrow">↗</span></a>
-          <a class="resource-card" href="https://www.youtube.com/results?search_query=${query}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">▶️</span><span><b>Aulas gratuitas: ${esc(topic.title)}</b><small>Buscar videoaulas gratuitas no YouTube</small></span><span class="resource-arrow">↗</span></a>${sourceLink}</div>
+          <a class="resource-card" href="${esc(videoUrl)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">▶️</span><span><b>${selectedVideos[topic.id] ? 'Aula gratuita selecionada' : 'Buscar aulas gratuitas'}: ${esc(topic.title)}</b><small>${selectedVideos[topic.id] ? 'Videoaula gratuita indicada no YouTube' : 'Resultados de videoaulas gratuitas no YouTube'}</small></span><span class="resource-arrow">↗</span></a>${sourceLink}</div>
         </div>
       </section>`;
     }
