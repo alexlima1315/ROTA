@@ -137,7 +137,7 @@
   window.rotaTopicExtras = {
     render(topic) {
       const lesson = lessons[topic.id] || [
-        `${topic.title}: ${topic.desc || 'Estude este assunto em etapas curtas, observando os conceitos básicos e como aparecem em questões de concurso.'} Use o edital do seu cargo para selecionar a profundidade necessária.`,
+        `${topic.title}: ${topic.desc || 'Estude este assunto em etapas curtas, observando os conceitos básicos e como aparecem em questões de concurso.'} Avance do conceito básico para os exemplos e questões.`,
         `Exemplo de estudo: explique o conceito com suas próprias palavras e associe-o a uma situação prática ou a uma questão da banca.`,
         `Qual é a ideia central de “${topic.title}”? Tente responder antes de abrir a explicação.`,
         `Revise a descrição e o exemplo deste tópico, depois explique a ideia central com uma frase sua.`
@@ -155,7 +155,7 @@
         <div class="guide-example"><span class="guide-step">2</span><div><b>Exemplo simples</b><p>${esc(lesson[1])}</p></div></div>
         <div class="guide-practice"><span class="guide-step">3</span><div><b>Pratique agora</b><p>${esc(lesson[2])}</p><details><summary>Ver resposta explicada</summary><p>${esc(lesson[3])}</p></details></div></div>
         ${mapMarkup}
-        <div class="topic-resources"><div class="guide-heading"><span class="guide-kicker">CONTINUE ESTUDANDO</span><h3>Materiais gratuitos</h3><p>Recursos externos; confira a edição e o programa do seu edital, principalmente em legislação.</p></div>
+        <div class="topic-resources" id="topic-resources-${esc(topic.id)}"><div class="guide-heading"><span class="guide-kicker">CONTINUE ESTUDANDO</span><h3>Materiais gratuitos</h3><p>Aulas, leituras e materiais de apoio para aprofundar este assunto. Em legislação, prefira sempre a versão oficial atualizada.</p></div>
           <div class="resource-grid"><a class="resource-card" href="${esc(pdf.url)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">📄</span><span><b>${esc(pdf.title)}</b><small>${esc(pdf.source)} · abre em nova aba</small></span><span class="resource-arrow">↗</span></a>
           <a class="resource-card" href="${esc(videoUrl)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">▶️</span><span><b>${selectedVideos[topic.id] ? 'Aula gratuita selecionada' : 'Buscar aulas gratuitas'}: ${esc(topic.title)}</b><small>${selectedVideos[topic.id] ? 'Videoaula gratuita indicada no YouTube' : 'Resultados de videoaulas gratuitas no YouTube'}</small></span><span class="resource-arrow">↗</span></a>${sourceLink}</div>
         </div>
