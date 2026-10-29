@@ -124,6 +124,54 @@
     'atualidades-metodo': { title: 'Mapa político do Brasil — PDF do IBGE', url: 'https://geoftp.ibge.gov.br/produtos_educacionais/atlas_educacionais/atlas_geografico_escolar/mapas_do_brasil/mapas_nacionais/politico/brasil_politico.pdf', source: 'IBGE · página oficial com download em PDF' }
   };
 
+  // Leituras complementares por matéria. Os links levam a repositórios educacionais
+  // ou fontes oficiais; o conteúdo de cada tópico continua acompanhado de uma aula.
+  const extraMaterials = {
+    'Língua Portuguesa': [
+      { title: 'Livro aberto de Língua Portuguesa — eduCAPES', url: 'https://educapes.capes.gov.br/handle/capes/717809', source: 'eduCAPES / CAPES', icon: '📘' }
+    ],
+    'Matemática': [
+      { title: 'Matemática básica — material aberto CEDERJ', url: 'https://educapes.capes.gov.br/handle/capes/918597', source: 'eduCAPES / UAB', icon: '📘' },
+      { title: 'Porcentagem — sequência didática gratuita', url: 'https://educapes.capes.gov.br/handle/capes/569777', source: 'eduCAPES / CAPES', icon: '🧮' }
+    ],
+    'Raciocínio Lógico': [
+      { title: 'Guia de raciocínio lógico com questões resolvidas', url: 'https://educapes.capes.gov.br/handle/capes/918554', source: 'Universidade Federal do Cariri / eduCAPES', icon: '🧩' },
+      { title: 'Funções matemáticas aplicadas em concursos', url: 'https://educapes.capes.gov.br/handle/capes/918597', source: 'Universidade Federal do Cariri / eduCAPES', icon: '📐' }
+    ],
+    'Informática': [
+      { title: 'Guia oficial do LibreOffice — texto e PDF', url: 'https://books.libreoffice.org/pt-br/GS248/GS248.html', source: 'Documentação LibreOffice', icon: '💻' },
+      { title: 'Cartilhas de segurança digital para baixar', url: 'https://www.gov.br/pf/pt-br/assuntos/combate-a-crimes-ciberneticos/cartilhas-de-seguranca-da-informacao', source: 'Polícia Federal', icon: '🔐' }
+    ],
+    'Direito Constitucional': [
+      { title: 'Constituição Federal — consulta oficial', url: 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm', source: 'Presidência da República', icon: '⚖️' },
+      { title: 'Constituição Federal — edição da Câmara em PDF', url: 'https://bd.camara.leg.br/bd/handle/bdcamara/56877.70', source: 'Biblioteca da Câmara dos Deputados', icon: '📄' }
+    ],
+    'Direito Administrativo': [
+      { title: 'Direito Administrativo — livro aberto', url: 'https://educapes.capes.gov.br/handle/capes/643241', source: 'Universidade Aberta do Brasil / eduCAPES', icon: '📘' },
+      { title: 'Manual de Licitações e Contratos — PDF', url: 'https://portal.tcu.gov.br/publicacoes-institucionais/cartilha-manual-ou-tutorial/licitacoes-e-contratos-orientacoes-e-jurisprudencia-do-tcu', source: 'Tribunal de Contas da União', icon: '📄' }
+    ],
+    'Ética no Serviço Público': [
+      { title: 'Cartilha Código de Ética do Servidor — PDF', url: 'https://portal.tcu.gov.br/data/files/A5/A3/54/BB/441DB710140B5BA7F18818A8/Cartilha_Codigo_etica_servidor.pdf', source: 'Tribunal de Contas da União', icon: '📄' },
+      { title: 'Decreto nº 1.171/1994 — texto oficial', url: 'https://www.planalto.gov.br/ccivil_03/decreto/d1171.htm', source: 'Presidência da República', icon: '⚖️' }
+    ],
+    'Redação Oficial': [
+      { title: 'Manual de Redação da Presidência — PDF', url: 'https://www.gov.br/cidades/pt-br/midia/documentos/pdf/manualderedacao.pdf', source: 'Governo Federal', icon: '📄' },
+      { title: 'Guia gratuito para revisar documentos', url: 'https://repositorio.enap.gov.br/bitstream/1/5258/1/Guia-para-revisa%CC%83o-de-documentos.pdf', source: 'Escola Nacional de Administração Pública', icon: '✍️' }
+    ],
+    'Língua Inglesa': [
+      { title: 'Inglês Instrumental — livro aberto em PDF', url: 'https://educapes.capes.gov.br/handle/capes/717878', source: 'eduCAPES / CAPES', icon: '📄' },
+      { title: 'Leitura, vocabulário e gramática — exercícios gratuitos', url: 'https://learnenglish.britishcouncil.org/', source: 'British Council', icon: '🌐' }
+    ],
+    'Legislação e Transparência': [
+      { title: 'Lei de Acesso à Informação — texto oficial', url: 'https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm', source: 'Presidência da República', icon: '⚖️' },
+      { title: 'Cartilha da LAI — material gratuito', url: 'https://www.gov.br/funasa/pt-br/acesso-a-informacao/participacao-social/ouvidoria/cartilha-lei-de-acesso-a-informacao_compressed.pdf', source: 'CGU / Governo Federal', icon: '📄' }
+    ],
+    'Atualidades': [
+      { title: 'Atlas Geográfico Escolar — mapas do Brasil', url: 'https://geoftp.ibge.gov.br/produtos_educacionais/atlas_educacionais/atlas_geografico_escolar/mapas_do_brasil/mapas_nacionais/politico/brasil_politico.pdf', source: 'IBGE', icon: '🗺️' },
+      { title: 'Notícias e políticas públicas para acompanhar', url: 'https://agenciagov.ebc.com.br/', source: 'Agência Gov / EBC', icon: '📰' }
+    ]
+  };
+
   const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
   const officialTexts = {
     'const-fundamentos': 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
@@ -153,6 +201,7 @@
         `Revise a descrição e o exemplo deste tópico, depois explique a ideia central com uma frase sua.`
       ];
       const pdf = topicMaterials[topic.id] || materials[topic.area] || materials['Língua Portuguesa'];
+      const extraLinks = (extraMaterials[topic.area] || []).map((item) => `<a class="resource-card" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">${item.icon}</span><span><b>${esc(item.title)}</b><small>${esc(item.source)} · abre em nova aba</small></span><span class="resource-arrow">↗</span></a>`).join('');
       const query = encodeURIComponent(`aula gratuita ${topic.title} concurso público`);
       const videoUrl = selectedVideos[topic.id] || `https://www.youtube.com/results?search_query=${query}`;
       const isLaw = ['Direito Constitucional', 'Direito Administrativo', 'Ética no Serviço Público', 'Legislação e Transparência'].includes(topic.area);
@@ -167,7 +216,7 @@
         ${mapMarkup}
         <div class="topic-resources" id="topic-resources-${esc(topic.id)}"><div class="guide-heading"><span class="guide-kicker">CONTINUE ESTUDANDO</span><h3>Materiais gratuitos</h3><p>Aulas, leituras e materiais de apoio para aprofundar este assunto. Em legislação, prefira sempre a versão oficial atualizada.</p></div>
           <div class="resource-grid"><a class="resource-card" href="${esc(pdf.url)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">📄</span><span><b>${esc(pdf.title)}</b><small>${esc(pdf.source)} · abre em nova aba</small></span><span class="resource-arrow">↗</span></a>
-          <a class="resource-card" href="${esc(videoUrl)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">▶️</span><span><b>${selectedVideos[topic.id] ? 'Aula gratuita selecionada' : 'Buscar aulas gratuitas'}: ${esc(topic.title)}</b><small>${selectedVideos[topic.id] ? 'Videoaula gratuita indicada no YouTube' : 'Resultados de videoaulas gratuitas no YouTube'}</small></span><span class="resource-arrow">↗</span></a>${sourceLink}</div>
+          ${extraLinks}<a class="resource-card" href="${esc(videoUrl)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">▶️</span><span><b>${selectedVideos[topic.id] ? 'Aula gratuita selecionada' : 'Buscar aulas gratuitas'}: ${esc(topic.title)}</b><small>${selectedVideos[topic.id] ? 'Videoaula gratuita indicada no YouTube' : 'Resultados de videoaulas gratuitas no YouTube'}</small></span><span class="resource-arrow">↗</span></a>${sourceLink}</div>
         </div>
       </section>`;
     }
