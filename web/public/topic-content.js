@@ -62,12 +62,22 @@
     'Atualidades': { title: 'Atlas Geográfico Escolar — PDF do IBGE', url: 'https://www.ibge.gov.br/geociencias/atlas/nacional/2402-np-atlas-geografico-escolar/16633-atlas-geografico-escolar.html', source: 'IBGE' }
   };
 
+  const topicMaterials = {
+    'adm-principios': { title: 'Direito Administrativo — livro didático aberto (eduCAPES)', url: 'https://educapes.capes.gov.br/bitstream/capes/401410/1/Livro%20Direito%20Administrativo%203ed%20GRAFICA.pdf', source: 'eduCAPES / CAPES · apoio conceitual; consulte normas vigentes' },
+    'adm-atos': { title: 'Direito Administrativo — livro didático aberto (eduCAPES)', url: 'https://educapes.capes.gov.br/bitstream/capes/401410/1/Livro%20Direito%20Administrativo%203ed%20GRAFICA.pdf', source: 'eduCAPES / CAPES · apoio conceitual; consulte normas vigentes' },
+    'adm-poderes': { title: 'Direito Administrativo — livro didático aberto (eduCAPES)', url: 'https://educapes.capes.gov.br/bitstream/capes/401410/1/Livro%20Direito%20Administrativo%203ed%20GRAFICA.pdf', source: 'eduCAPES / CAPES · apoio conceitual; consulte normas vigentes' },
+    'processo-adm': { title: 'Lei nº 9.784/1999 — PDF do texto original', url: 'https://www.gov.br/mj/pt-br/assuntos/seus-direitos/entidades-sociais/oscip/anexos/1999lei9784.pdf', source: 'Governo Federal · confira alterações na versão oficial' },
+    servidores: { title: 'Lei nº 8.112/1990 anotada — PDFs do Portal do Servidor', url: 'https://www.gov.br/servidor/pt-br/acesso-a-informacao/gestao-de-pessoas/lei-8112-anotada', source: 'Portal do Servidor · material atualizado pelo órgão' },
+    lai: { title: 'Cartilha da Lei de Acesso à Informação — PDF', url: 'https://www.gov.br/funasa/pt-br/acesso-a-informacao/participacao-social/ouvidoria/cartilha-lei-de-acesso-a-informacao_compressed.pdf', source: 'CGU / Governo Federal' },
+    'atualidades-metodo': { title: 'Atlas Geográfico Escolar — PDF do IBGE', url: 'https://www.ibge.gov.br/geociencias/atlas/nacional/2402-np-atlas-geografico-escolar/16633-atlas-geografico-escolar.html', source: 'IBGE · página oficial com download em PDF' }
+  };
+
   const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
   window.rotaTopicExtras = {
     render(topic) {
       const lesson = lessons[topic.id];
       if (!lesson) return '';
-      const pdf = materials[topic.area] || materials['Língua Portuguesa'];
+      const pdf = topicMaterials[topic.id] || materials[topic.area] || materials['Língua Portuguesa'];
       const query = encodeURIComponent(`aula gratuita ${topic.title} concurso público`);
       const isLaw = ['Direito Constitucional', 'Direito Administrativo', 'Legislação e Transparência'].includes(topic.area);
       const sourceLink = isLaw && topic.source ? `<a class="resource-card" href="${esc(topic.source)}" target="_blank" rel="noopener noreferrer"><span class="resource-icon">⚖️</span><span><b>Texto oficial para conferir</b><small>Lei ou norma indicada no tópico · fonte oficial</small></span><span class="resource-arrow">↗</span></a>` : '';
