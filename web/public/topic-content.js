@@ -75,8 +75,12 @@
   const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
   window.rotaTopicExtras = {
     render(topic) {
-      const lesson = lessons[topic.id];
-      if (!lesson) return '';
+      const lesson = lessons[topic.id] || [
+        `${topic.title}: ${topic.desc || 'Estude este assunto em etapas curtas, observando os conceitos básicos e como aparecem em questões de concurso.'} Use o edital do seu cargo para selecionar a profundidade necessária.`,
+        `Exemplo de estudo: explique o conceito com suas próprias palavras e associe-o a uma situação prática ou a uma questão da banca.`,
+        `Qual é a ideia central de “${topic.title}”? Tente responder antes de abrir a explicação.`,
+        `Revise a descrição e o exemplo deste tópico, depois explique a ideia central com uma frase sua.`
+      ];
       const pdf = topicMaterials[topic.id] || materials[topic.area] || materials['Língua Portuguesa'];
       const query = encodeURIComponent(`aula gratuita ${topic.title} concurso público`);
       const isLaw = ['Direito Constitucional', 'Direito Administrativo', 'Legislação e Transparência'].includes(topic.area);
