@@ -19,9 +19,9 @@ rota-estudo/
 
 Na pasta `web/`, instale as dependências, configure `.env` a partir de `.env.example`, gere o Prisma Client e inicie o Next.js. A página `/` exibe a versão web existente; as APIs e componentes de estudo/CMS ficam disponíveis nas rotas e pastas de `src/`.
 
-O site estático de estudos fica em `web/public/index.html` e inclui a Biblioteca de Materiais com links externos por matéria. O workflow `.github/workflows/pages.yml` publica esse diretório no GitHub Pages quando a plataforma está habilitada no repositório.
+O site estático de estudos fica em `web/public/index.html` e inclui a Biblioteca de Materiais com links externos por matéria. O workflow `.github/workflows/pages.yml` publica esse diretório no GitHub Pages a cada atualização.
 
-Para habilitar: em **Settings → Pages**, selecione **GitHub Actions** como fonte de publicação. O repositório foi criado como privado; o GitHub Pages para repositórios privados requer plano compatível. A URL padrão do site será `https://alexlima1315.github.io/ROTA/` depois que o deploy concluir.
+Site publicado: <https://alexlima1315.github.io/ROTA/>. O repositório foi tornado público para habilitar o GitHub Pages no plano atual; todo o código e o histórico de Actions ficam visíveis publicamente. Não inclua segredos, credenciais ou dados pessoais no repositório.
 
 Antes de conectar um banco de produção, compare `prisma/schema.prisma` com o banco criado anteriormente. A especificação executável completa das Fases 1 e 2 não estava salva na pasta compartilhada; o schema-base aqui foi consolidado a partir dos campos exigidos pelas APIs e migrações das fases posteriores. Não aplique migrações a um banco existente sem revisar o estado atual.
 
